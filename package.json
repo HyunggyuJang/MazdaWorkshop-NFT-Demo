@@ -16,19 +16,13 @@
     "eslint-plugin-promise": "^5.1.0",
     "mocha": "10.1.0",
     "ts-node": "^10.8.0",
-    "@supercolony/typechain-compiler": "^0.5.1-beta.1",
-    "@supercolony/typechain-types": "^0.0.16",
-    "patch-package": "^6.4.7"
+    "@arthswap/typechain-compiler": "0.0.12",
+    "@arthswap/typechain-types": "0.0.9"
   },
   "scripts": {
     "compile": "typechain-compiler",
     "compile:release": "typechain-compiler --release",
     "test": "mocha --require ts-node/register --recursive ./tests --extension \".spec.ts\" --exit --timeout 20000",
-    "test:single": "mocha --require ts-node/register --extension \".ts\" --exit --timeout 20000",
-    "postinstall": "patch-package"
-  },
-  "resolutions": {
-    "@polkadot/api": "^9.6.1",
-    "@polkadot/api-contract": "^9.6.1"
+    "test:single": "mocha --require ts-node/register --extension \".ts\" --exit --timeout 20000"
   }
 }
