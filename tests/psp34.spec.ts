@@ -56,7 +56,7 @@ describe('Minting psp34 tokens', () => {
     expect((await contract.query.totalSupply()).value.ok.toNumber()).to.equal(0);
 
     // mint
-    let mintResult = await contract.withSigner(bob).tx.mintNext({ value: PRICE_PER_MINT });
+    let mintResult = await contract.withSigner(bob).tx.mint({ value: PRICE_PER_MINT });
 
     // verify minting results. The totalSupply value is BN
     expect((await contract.query.totalSupply()).value.ok.toNumber()).to.equal(1);
@@ -74,7 +74,9 @@ describe('Minting psp34 tokens', () => {
 
     await contract.withSigner(deployer).tx.setMaxMintAmount(5);
 
-    await contract.withSigner(bob).tx.mint(bob.address, 5, { value: PRICE_PER_MINT.muln(5) });
+    for (let i = 0; i < 5; ++i) {
+      await contract.withSigner(bob).tx.mint({ value: PRICE_PER_MINT });
+    }
 
     expect((await contract.query.totalSupply()).value.ok.toNumber()).to.equal(5);
     expect((await contract.query.ownerOf({ u64: 5 })).value.ok).to.equal(bob.address);
@@ -84,7 +86,7 @@ describe('Minting psp34 tokens', () => {
     await setup();
 
     // Bob mints
-    let mintResult = await contract.withSigner(bob).tx.mintNext({ value: PRICE_PER_MINT });
+    let mintResult = await contract.withSigner(bob).tx.mint({ value: PRICE_PER_MINT });
     emit(mintResult, 'Transfer', { from: null, to: bob.address, id: `{"u64":${1}}`, });
 
     // Bob transfers token to Deployer
@@ -100,7 +102,7 @@ describe('Minting psp34 tokens', () => {
     await setup();
 
     // Bob mints
-    await contract.withSigner(bob).tx.mintNext({ value: PRICE_PER_MINT });
+    await contract.withSigner(bob).tx.mint({ value: PRICE_PER_MINT });
 
     // Bob approves deployer to be operator of the token
     let approveResult = await contract.withSigner(bob).tx.approve(deployer.address, { u64: 1 }, true);
@@ -115,7 +117,7 @@ describe('Minting psp34 tokens', () => {
     await setup();
 
     // Bob tries to mint without funding
-    let mintResult = await contract.withSigner(bob).query.mintNext();
+    let mintResult = await contract.withSigner(bob).query.mint();
     expect(hex2a(mintResult.value.ok.err.custom)).to.be.equal('BadMintValue');
   })
 })

@@ -40,7 +40,6 @@ use openbrush::{
     },
     modifiers,
     traits::{
-        AccountId,
         Balance,
         Storage,
         String,
@@ -68,27 +67,10 @@ where
         + psp34::extensions::metadata::PSP34Metadata
         + psp34::Internal,
 {
-    /// Mint one or more tokens
+    /// Mint one token
     #[modifiers(non_reentrant)]
-    default fn mint(&mut self, to: AccountId, mint_amount: u64) -> Result<(), PSP34Error> {
-        self.check_amount(mint_amount)?;
-        self.check_value(Self::env().transferred_value(), mint_amount)?;
-
-        let next_to_mint = self.data::<Data>().last_token_id + 1; // first mint id is 1
-        let mint_offset = next_to_mint + mint_amount;
-
-        for mint_id in next_to_mint..mint_offset {
-            self.data::<psp34::Data<enumerable::Balances>>()
-                ._mint_to(to, Id::U64(mint_id))?;
-            self.data::<Data>().last_token_id += 1;
-            self._emit_transfer_event(None, Some(to), Id::U64(mint_id));
-        }
-
-        Ok(())
-    }
-
-    /// Mint next available token for the caller
-    default fn mint_next(&mut self) -> Result<(), PSP34Error> {
+    default fn mint(&mut self) -> Result<(), PSP34Error> {
+        self.check_amount(1)?;
         self.check_value(Self::env().transferred_value(), 1)?;
         let caller = Self::env().caller();
         let token_id =
@@ -103,7 +85,7 @@ where
         self.data::<Data>().last_token_id += 1;
 
         self._emit_transfer_event(None, Some(caller), Id::U64(token_id));
-        return Ok(())
+        Ok(())
     }
 
     /// Set new value for the baseUri

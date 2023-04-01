@@ -2,10 +2,7 @@ use ink::prelude::string::String as PreludeString;
 
 use openbrush::{
     contracts::psp34::PSP34Error,
-    traits::{
-        AccountId,
-        Balance,
-    },
+    traits::Balance,
 };
 
 #[openbrush::wrapper]
@@ -13,13 +10,9 @@ pub type PayableMintRef = dyn PayableMint;
 
 #[openbrush::trait_definition]
 pub trait PayableMint {
-    /// Mint one or more tokens
+    /// Mint one token
     #[ink(message, payable)]
-    fn mint(&mut self, to: AccountId, mint_amount: u64) -> Result<(), PSP34Error>;
-
-    /// Mint next available token for the caller
-    #[ink(message, payable)]
-    fn mint_next(&mut self) -> Result<(), PSP34Error>;
+    fn mint(&mut self) -> Result<(), PSP34Error>;
 
     /// Set new value for the baseUri
     #[ink(message)]
