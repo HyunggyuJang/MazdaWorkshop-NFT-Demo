@@ -58,7 +58,7 @@ const IndexCanvas = () => {
   const [subScanTitle, setSubScanTitle] = useState('');
 
   const [ipfsGateway, setIpfsGateway] = useState('');
-  const [actingIpfsGateway, setActingIpfsGateway] = useState('Pinata');
+  const [actingIpfsGateway, setActingIpfsGateway] = useState('NftStorage');
 
   useEffect(() => {
     setIpfsGateway(actingIpfsGateway);
