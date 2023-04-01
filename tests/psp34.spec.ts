@@ -67,19 +67,18 @@ describe('Minting psp34 tokens', () => {
     expect((await contract.query.tokenUri(1)).value.ok.ok).to.equal(TOKEN_URI_1);
   })
 
-  it('Mint 5 tokens works', async () => {
+  it('Mint 2 tokens works', async () => {
     await setup();
 
     expect((await contract.query.totalSupply()).value.ok.toNumber()).to.equal(0);
 
-    await contract.withSigner(deployer).tx.setMaxMintAmount(5);
+    await contract.withSigner(deployer).tx.setMaxMintAmount(2);
 
-    for (let i = 0; i < 5; ++i) {
-      await contract.withSigner(bob).tx.mint({ value: PRICE_PER_MINT });
-    }
+    await contract.tx.mint({ value: PRICE_PER_MINT });
+    await contract.withSigner(bob).tx.mint({ value: PRICE_PER_MINT });
 
-    expect((await contract.query.totalSupply()).value.ok.toNumber()).to.equal(5);
-    expect((await contract.query.ownerOf({ u64: 5 })).value.ok).to.equal(bob.address);
+    expect((await contract.query.totalSupply()).value.ok.toNumber()).to.equal(2);
+    expect((await contract.query.ownerOf({ u64: 2 })).value.ok).to.equal(bob.address);
   })
 
   it('Token transfer works', async () => {

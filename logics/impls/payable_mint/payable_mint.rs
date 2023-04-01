@@ -42,7 +42,7 @@ use openbrush::{
     traits::{
         Balance,
         Storage,
-        String,
+        String, AccountId,
     },
 };
 
@@ -52,6 +52,8 @@ pub trait Internal {
 
     /// Check amount of tokens to be minted
     fn check_amount(&self, mint_amount: u64) -> Result<(), PSP34Error>;
+
+    fn check_minted(&self, caller: AccountId) -> Result<(), PSP34Error>;
 
     /// Check if token is minted
     fn token_exists(&self, id: Id) -> Result<(), PSP34Error>;
@@ -73,6 +75,7 @@ where
         self.check_amount(1)?;
         self.check_value(Self::env().transferred_value(), 1)?;
         let caller = Self::env().caller();
+        self.check_minted(caller)?;
         let token_id =
             self.data::<Data>()
                 .last_token_id
@@ -169,6 +172,20 @@ where
         }
         return Err(PSP34Error::Custom(String::from(
             Shiden34Error::BadMintValue.as_str(),
+        )))
+    }
+
+    /// Check if already minted
+    default fn check_minted(
+        &self,
+        caller: AccountId
+    ) -> Result<(), PSP34Error> {
+        let minted_amount = self.data::<psp34::Data<enumerable::Balances>>().balance_of(caller);
+        if minted_amount == 0 {
+            return Ok(())
+        }
+        return Err(PSP34Error::Custom(String::from(
+            Shiden34Error::TooManyTokensToMint.as_str(),
         )))
     }
 
