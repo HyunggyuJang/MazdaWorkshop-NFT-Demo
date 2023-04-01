@@ -29,9 +29,9 @@ describe('Minting psp34 tokens', () => {
     bob = keyring.addFromUri('//Bob');
     rmrkFactory = new Rmrk_factory(api, deployer);
     contract = new Rmrk((await rmrkFactory.new(
-      ["Shiden34"],
-      ['SH34'],
-      [BASE_URI],
+      'Shiden34' as unknown as string[],
+      'SH34' as unknown as string[],
+      BASE_URI as unknown as string[],
       MAX_SUPPLY,
       PRICE_PER_MINT,
     )).address, deployer, api);
@@ -45,7 +45,7 @@ describe('Minting psp34 tokens', () => {
     expect((await contract.query.price()).value.ok.toString()).to.equal(PRICE_PER_MINT.toString());
     const collectionId = (await contract.query.collectionId()).value.ok;
 
-    expect((await contract.query.getAttribute(collectionId as unknown, "baseUri" as unknown as string[])).value.ok).to.equal('0x00');
+    expect(hex2a((await contract.query.getAttribute(collectionId as unknown, "baseUri" as unknown as string[])).value.ok)).to.equal(BASE_URI);
   })
 
   it('Use mintNext works', async () => {
