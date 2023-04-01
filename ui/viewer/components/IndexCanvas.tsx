@@ -7,7 +7,7 @@ import Footer from './Footer';
 import SampleContractsList from './SampleContractsList';
 
 // Specify the metadata of the contract.
-import abi from '../metadata/metadata_sample.json';
+import abi from '../metadata/shiden34.json';
 
 const IndexCanvas = () => {
   
@@ -225,7 +225,9 @@ const IndexCanvas = () => {
       let tmp = uri.substr(7);
       cid = uri.substr(7, tmp.indexOf('/'));
       fileName = uri.substr(tmp.indexOf('/') + 8);
-      if (actingIpfsGateway === 'ipfs.io') {
+      if (actingIpfsGateway  === 'NftStorage') {
+        uri = 'https://nftstorage.link/ipfs/' + cid + '/' + fileName;
+      } else if (actingIpfsGateway === 'ipfs.io') {
         uri = 'https://ipfs.io/ipfs/' + cid + '/' + fileName;
       } else if (actingIpfsGateway === 'Crust Network') {
         uri = 'https://gw.crustapps.net/ipfs/' + cid + '/' + fileName;
@@ -334,6 +336,7 @@ const IndexCanvas = () => {
             setIpfsGateway((event.target.value));
           }}
         >
+          <option value="NftStorage">NftStorage</option>
           <option value="Pinata">Pinata</option>
           <option value="Cloudflare">Cloudflare</option>
           <option value="Crust Network">Crust Network</option>
