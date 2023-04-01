@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ApiPromise, WsProvider } from '@polkadot/api';
+import { WeightV2 } from '@polkadot/types/interfaces';
 import { ContractPromise } from '@polkadot/api-contract';
 import axios from 'axios';
 import Header from './Header';
@@ -39,6 +40,7 @@ const IndexCanvas = () => {
   const [actingChainName, setActingChainName] = useState('');
   const [actingChainUrl, setActingChainUrl] = useState('');
   const [customUrl, setCustomUrl] = useState('');
+  const [gas, setGas] = useState<WeightV2>();
 
   const [api, setApi] = useState<any>();
   
@@ -46,9 +48,6 @@ const IndexCanvas = () => {
   const [tokenId, setTokenId] = useState('');
   const [tokenURI, setTokenURI] = useState('');
   const [ownerAddress, setOwnerAddress] = useState('');
-  
-  const [result, setResult] = useState('');
-  const [outcome, setOutcome] = useState('');
   
   const [tokenImageURI, setTokenImageURI] = useState('');
   const [ipfsImageURI, setIpfsImageURI] = useState('');
@@ -81,25 +80,19 @@ const IndexCanvas = () => {
 
     const contract = new ContractPromise(api, abi, contractAddress);
     const {result, output} = 
-      await contract.query['shiden34Trait::tokenUri'](
+      await contract.query['payableMint::tokenUri'](
         contractAddress,
-        {value: 0, gasLimit: -1},
-        {u64: tokenId});
+        {
+          gasLimit: gas
+        },
+        { u64: tokenId });
     
-    setResult(JSON.stringify(result.toHuman()));
-
-    // The actual result from RPC as `ContractExecResult`
-    console.log(result.toHuman());
-
     // check if the call was successful
     if (result.isOk) {
-      // output the return value
-      console.log('Success', output?.toHuman());
       const outputData: any = output;
-      setOutcome(outputData.toString());
 
       if (outputData.isOk) {
-        const url = outputData.inner.toString();
+        const url = outputData.inner.inner.toString();
         if (url !== undefined) {
           setTokenURI(url);
           const matadataUrl = getIpfsGatewayUri(url);
@@ -127,7 +120,6 @@ const IndexCanvas = () => {
         getOwnerOf();
 
       } else {
-        setOutcome(outputData.toString());
         setTokenURI('');
         setTokenImageURI('');
         setIpfsImageURI('');
@@ -137,7 +129,6 @@ const IndexCanvas = () => {
       }
 
     } else {
-      setOutcome('');
       setTokenURI('');
       setTokenImageURI('');
       setIpfsImageURI('');
@@ -152,7 +143,7 @@ const IndexCanvas = () => {
     const {result, output} = 
       await contract.query['psp34::ownerOf'](
         contractAddress,
-        {value: 0, gasLimit: -1},
+        {gasLimit: gas},
         {u64: tokenId});
     
     // The actual result from RPC as `ContractExecResult`
@@ -160,10 +151,8 @@ const IndexCanvas = () => {
 
     // check if the call was successful
     if (result.isOk) {
-      // output the return value
-      console.log('Success', output?.toHuman());
       const outcome: any = output;
-      const resultStr: string = outcome.toHuman()?.toString()!; 
+      const resultStr: string = outcome.inner.toString();
       if (resultStr) {
         setOwnerAddress(resultStr);
       } else {
@@ -199,6 +188,10 @@ const IndexCanvas = () => {
       setActingChainName(blockchainName);
       setBlock(lastHeader.number.toNumber());
       setActingChainUrl(chainUrl);
+      setGas(api.registry.createType('WeightV2', {
+        refTime: 500_000_000_000,
+        proofSize: 5_242_880
+      }) as WeightV2)
       unsubscribe();
     });
   };
@@ -313,8 +306,6 @@ const IndexCanvas = () => {
         </div>
 
         <div className="m-2 mt-4 p-2 bg-[#dcd6c8] dark:bg-[#020913] rounded">
-          <p className="p-1 m-1 break-all">Result: {result}</p>
-          <p className="p-1 m-1 break-all">OutputData: {outcome}</p>
           <p className="p-1 m-1">TokenId: {tokenId}</p>
           <p className="p-1 m-1 break-all">TokenURI: {tokenURI}</p>
           <p className="p-1 m-1 break-all" >ImageURI: {tokenImageURI}</p>
