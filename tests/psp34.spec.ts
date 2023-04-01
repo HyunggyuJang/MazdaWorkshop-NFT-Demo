@@ -8,6 +8,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 
 const MAX_SUPPLY = 888;
 const BASE_URI = "ipfs://tokenUriPrefix/";
+const TOKEN_URI_1 = "ipfs://tokenUriPrefix/1.json";
 const ONE = new BN(10).pow(new BN(18));
 const PRICE_PER_MINT = ONE;
 
@@ -63,9 +64,7 @@ describe('Minting psp34 tokens', () => {
     expect((await contract.query.ownerOf({ u64: tokenId })).value.ok).to.equal(bob.address);
     emit(mintResult, 'Transfer', { from: null, to: bob.address, id: `{"u64":${tokenId}}`, });
 
-    // TODO verify tokenUri call
-    // console.log("tokenUri", (await contract.query.tokenUri(1)).value);
-    // expect((await contract.query.tokenUri(1))).to.equal(TOKEN_URI_1);
+    expect((await contract.query.tokenUri(1)).value.ok.ok).to.equal(TOKEN_URI_1);
   })
 
   it('Mint 5 tokens works', async () => {
