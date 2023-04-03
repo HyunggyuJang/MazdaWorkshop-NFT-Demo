@@ -39,7 +39,7 @@ First start your local node. Recommended [swanky-node](https://github.com/AstarN
 ```sh
 swanky-node --dev -lerror,runtime::contracts::strace=trace,runtime::contracts=debug
 ```
-- or deploy with polkadot.JS. Instructions on [Astar docs](https://docs.astar.network/docs/wasm/sc-dev/polkadotjs-ui)
+- or deploy with polkadot.JS. Instructions on [Astar docs](https://docs.astar.network/docs/build/wasm/tooling/polkadotjs)
 
 ##### 💫 Run integration test
 First start your local node. Recommended [swanky-node](https://github.com/AstarNetwork/swanky-node) v1.1.0
