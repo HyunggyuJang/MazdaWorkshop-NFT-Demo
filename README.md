@@ -16,8 +16,7 @@
 This is an example nft project using ink! smart contract. The project is generated with Openbrush wizard for PSP34 with added PayableMinted trait.
 
 ### Purpose
-This is an unaudited nft project template.
-It can be used to speed up wasm nft project on Astar and other networks.
+This is to demonstrate how to development NFT project using ink! for Mazda Workshop.
 
 ### License
 Apache 2.0
@@ -27,32 +26,30 @@ Apache 2.0
 - Use this [instructions](https://use.ink/getting-started/setup) to setup your ink!/Rust environment
 
 ```sh
-cargo +nightly contract build
+yarn compile:release
 ```
 
 ##### 💫 Run unit test
 
 ```sh
-cargo +nightly test
+cargo test
 ```
 ##### 💫 Deploy
-First start your local node. Recommended [swanky-node](https://github.com/AstarNetwork/swanky-node) v0.13.0
+First start your local node. Recommended [swanky-node](https://github.com/AstarNetwork/swanky-node) v1.1.0
 ```sh
-./target/release/swanky-node --dev --tmp -lruntime=trace -lruntime::contracts=debug -lerror
+swanky-node --dev -lerror,runtime::contracts::strace=trace,runtime::contracts=debug
 ```
 - or deploy with polkadot.JS. Instructions on [Astar docs](https://docs.astar.network/docs/wasm/sc-dev/polkadotjs-ui)
 
 ##### 💫 Run integration test
-First start your local node. Recommended [swanky-node](https://github.com/AstarNetwork/swanky-node) v0.13.0
+First start your local node. Recommended [swanky-node](https://github.com/AstarNetwork/swanky-node) v1.1.0
 And then:
 ```sh
-yarn
-yarn compile
 yarn test
 ```
 
-##### 💫 Deployed contracts
-[Shiden Graffiti](https://github.com/Maar-io/ink-mint-dapp/tree/graffiti) - using ink! v3.4
+##### 💫 NFT viewer
+View minted NFT at [NFT viewer](https://swanky-nft.vercel.app/)!
 
 #### 📚 Learn
 Follow the [From Zero to ink! Hero](https://docs.astar.network/docs/build/wasm/from-zero-to-ink-hero/) tutorial tu learn how to build this smart contract
